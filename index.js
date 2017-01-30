@@ -58,7 +58,9 @@ app.use(bodyParser.json());
 
 app.post('/create', function (req, res) {
 	debug(req.body);
-	let room = new Room(id(req.body.clientID));
+	let room = new Room(id(req.body.clientID), {
+		mode: req.body.mode
+	});
 
 	res.json({
 		roomID: room.id

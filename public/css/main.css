@@ -6,9 +6,10 @@
 	text-shadow: 0px 0px 2px #000;
 }
 
-.piece-editor {
-	min-width: 100px;
-}
+
+/*.piece-editor {
+	margin-left: 0px;
+}*/
 
 .editor {
 	position: fixed;

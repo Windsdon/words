@@ -80,9 +80,13 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 	$scope.prefEditorHidden = false;
 
 	this.game = {
+		mode: 'single',
 		selfID: '',
 		input: '',
-		yourTurn: false,
+		isOwner: false,
+		current: null, // current player
+		yourTurn: false, // if you are allowed to submit
+		presence: 'spectator', // your own status
 		users: {},
 		text: []
 	}
@@ -91,6 +95,21 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 
 	$scope.onEditorClick = function () {
 		$('.editor').focus();
+	}
+
+	$scope.randomizeColors = function () {
+		ws.sendJSON('randomize-colors');
+	}
+
+	$scope.setPresence = function (state) {
+		ws.sendJSON('set-presence', state);
+	}
+
+	$scope.setUserPresence = function (id, presence) {
+		ws.sendJSON('admin-set-presence', {
+			id: id,
+			presence: presence
+		});
 	}
 
 	$scope.$watch(function () {
@@ -109,6 +128,10 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 	});
 
 	this.processKeypress = function (e) {
+		if (e.keyCode == 32 && self.game.mode == 'single') {
+			e.preventDefault();
+			return false;
+		}
 		if (e.keyCode == 13) { // enter
 			e.preventDefault();
 			if (!self.game.yourTurn) {
@@ -124,7 +147,7 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 	this.sendInput = function () {
 		ws.send({
 			m: 'send',
-			d: self.game.input
+			d: self.game.input.trim()
 		});
 
 		self.game.input = '';
@@ -145,6 +168,14 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 		try {
 			var d = JSON.parse(message.data);
 			self.on[d.m].call(self, d.d);
+		} catch (err) {
+			console.log(message, err);
+		}
+
+		try {
+			self.game.isOwner = self.game.users[self.game.selfID].owner;
+			self.game.presence = self.game.users[self.game.selfID].presence;
+			self.game.yourTurn = self.game.current == self.game.selfID;
 		} catch (err) {
 			console.log(err);
 		}
@@ -177,6 +208,14 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 
 	this.on['self-id'] = function (d) {
 		self.game.selfID = d;
+	}
+
+	this.on['current'] = function (d) {
+		self.game.current = d;
+	}
+
+	this.on['mode'] = function (d) {
+		self.game.mode = d;
 	}
 });
 

@@ -1,7 +1,7 @@
 <div class="container-fluid">
 	<div class="row">
 		<div class="col-sm-10">
-			<span class="piece" ng-repeat="piece in game.text track by $index" ng-style="{'background-color':game.users[piece.author].color}">{{piece.content}}</span>
+			<span class="piece" ng-repeat="piece in game.text track by $index" ng-style="{'background-color':game.users[piece.author].color}">{{piece.content}} </span>
 			<span class="piece piece-editor" ng-style="{'background-color':game.users[game.selfID].color}" ng-click="onEditorClick()"
 				ng-if="game.yourTurn">
 				{{game.input}}
@@ -11,14 +11,43 @@
 		<div class="col-sm-2">
 			<h4>Players</h4>
 			<ul class="list-group">
-				<li class="list-group-item" ng-style="{'background-color':user.color}" ng-repeat="user in game.users">{{user.name}}</li>
+				<li class="list-group-item" ng-style="{'background-color':user.color}" ng-repeat="user in game.users">{{user.name}}
+					<i class="fa fa-star" ng-if="user.owner"></i>
+					<span class="badge" ng-if="game.isOwner" ng-click="setUserPresence(user.id, 'spectator')">
+						<i class="fa fa-ban"></i>
+					</span>
+					<span class="badge" ng-if="user.presence == 'spectator'">
+						<i class="fa fa-eye"></i>
+					</span>
+					<span class="badge" ng-if="game.current == user.id">
+						<i class="fa fa-keyboard-o"></i>
+					</span>
+				</li>
 			</ul>
 
 			<div class="btn-group btn-group-justified">
 				<div class="btn-group">
-					<button type="button" class="btn btn-danger" ng-click="game.yourTurn=true">Go now</button>
+					<button type="button" class="btn btn-success" ng-click="setPresence('joined')" ng-if="game.presence == 'spectator'">Entrar no jogo</button>
+					<button type="button" class="btn btn-danger" ng-click="setPresence('spectator')" ng-if="game.presence != 'spectator'">Sair do jogo</button>
 				</div>
 			</div>
+			<div class="btn-group btn-group-justified" ng-if="game.isOwner">
+				<div class="btn-group">
+					<button type="button" class="btn btn-default" ng-click="randomizeColors()">Aleatorizar cores</button>
+				</div>
+			</div>
+			<br>
+			<div class="alert alert-info">
+				<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+				<strong ng-if="game.mode=='single'">Modo uma palavra</strong>
+				<strong ng-if="game.mode=='multi'">Modo múltiplas palavras</strong>
+			</div>
+
+			<!--<div class="btn-group btn-group-justified">
+				<div class="btn-group">
+					<button type="button" class="btn btn-danger" ng-click="game.yourTurn=true">Agora!</button>
+				</div>
+			</div>-->
 
 		</div>
 	</div>
