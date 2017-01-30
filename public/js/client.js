@@ -69,7 +69,7 @@ app.controller('HomeController', function () {
 
 });
 
-app.controller('RoomController', function ($scope, $websocket, $routeParams, $timeout, UserSettings) {
+app.controller('RoomController', function ($scope, $websocket, $routeParams, $timeout, $window, UserSettings) {
 	var wsurl = 'ws://' + location.host + '/ws/' + $routeParams.id
 		+ '?clientID=' + UserSettings.clientID
 		+ '&name=' + encodeURIComponent(UserSettings.username);
@@ -156,6 +156,7 @@ app.controller('RoomController', function ($scope, $websocket, $routeParams, $ti
 
 	ws.onClose(function () {
 		console.log('Websocket Closed!');
+		$window.location.reload();
 	});
 	ws.onError(function () {
 		alert('Websocket Error!');

@@ -9,7 +9,7 @@
 			<textarea class="editor" ng-class="{'hidden-editor': prefEditorHidden || !game.yourTurn}" ng-model="game.input" ng-blur="onEditorBlur()"></textarea>
 		</div>
 		<div class="col-sm-2">
-			<h4>Players</h4>
+			<h4>Jogadores</h4>
 			<ul class="list-group">
 				<li class="list-group-item" ng-style="{'background-color':user.color}" ng-repeat="user in game.users">{{user.name}}
 					<i class="fa fa-star" ng-if="user.owner"></i>
