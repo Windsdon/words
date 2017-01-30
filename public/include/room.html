@@ -1,0 +1,25 @@
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-10">
+			<span class="piece" ng-repeat="piece in game.text track by $index" ng-style="{'background-color':game.users[piece.author].color}">{{piece.content}}</span>
+			<span class="piece piece-editor" ng-style="{'background-color':game.users[game.selfID].color}" ng-click="onEditorClick()"
+				ng-if="game.yourTurn">
+				{{game.input}}
+			</span>
+			<textarea class="editor" ng-class="{'hidden-editor': prefEditorHidden || !game.yourTurn}" ng-model="game.input" ng-blur="onEditorBlur()"></textarea>
+		</div>
+		<div class="col-sm-2">
+			<h4>Players</h4>
+			<ul class="list-group">
+				<li class="list-group-item" ng-style="{'background-color':user.color}" ng-repeat="user in game.users">{{user.name}}</li>
+			</ul>
+
+			<div class="btn-group btn-group-justified">
+				<div class="btn-group">
+					<button type="button" class="btn btn-danger" ng-click="game.yourTurn=true">Go now</button>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
